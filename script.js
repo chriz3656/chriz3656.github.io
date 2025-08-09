@@ -1,8 +1,9 @@
-// === PAGE PROGRESS BAR ===
+// Create and add progress bar
 const progressBar = document.createElement('div');
 progressBar.className = 'page-progress';
 document.body.appendChild(progressBar);
 
+// Handle page load progress
 window.addEventListener('load', () => {
     progressBar.style.width = '100%';
     setTimeout(() => {
@@ -10,7 +11,7 @@ window.addEventListener('load', () => {
     }, 1000);
 });
 
-// === LAZY LOAD IMAGES ===
+// Lazy load images with fade-in effect
 const lazyLoadImages = () => {
     const imageObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
@@ -29,10 +30,7 @@ const lazyLoadImages = () => {
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    // === EmailJS Init ===
-    emailjs.init("pQhfyyq80r665-nGI");
-
-    // === CUSTOM CURSOR ===
+    // Custom Cursor Initialization
     const cursor = document.querySelector('.custom-cursor');
     const cursorDot = document.querySelector('.cursor-dot');
     if (cursor && cursorDot) {
@@ -61,45 +59,58 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
     // Initialize lazy loading
     lazyLoadImages();
-
-    // === MOBILE NAVIGATION ===
+    
+    // Mobile Navigation
     const burger = document.querySelector('.burger');
     const navLinks = document.querySelector('.nav-links');
     const navItems = document.querySelectorAll('.nav-links li');
     
     if (burger) {
         burger.addEventListener('click', () => {
+            // Toggle Nav
             navLinks.classList.toggle('active');
             burger.classList.toggle('active');
+            
+            // Animate Links
             navItems.forEach((link, index) => {
-                link.style.animation = link.style.animation ? '' : `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
+                if (link.style.animation) {
+                    link.style.animation = '';
+                } else {
+                    link.style.animation = `navLinkFade 0.5s ease forwards ${index / 7 + 0.3}s`;
+                }
             });
         });
     }
-
-    // === SMOOTH SCROLLING ===
+    
+    // Smooth Scrolling for Navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
-            const targetElement = document.querySelector(this.getAttribute('href'));
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
             if (targetElement) {
                 window.scrollTo({
                     top: targetElement.offsetTop - 80,
                     behavior: 'smooth'
                 });
+                
+                // Close mobile menu if open
                 if (navLinks && navLinks.classList.contains('active')) {
                     navLinks.classList.remove('active');
                     burger.classList.remove('active');
-                    navItems.forEach(link => link.style.animation = '');
+                    navItems.forEach(link => {
+                        link.style.animation = '';
+                    });
                 }
             }
         });
     });
-
-    // === NAVBAR SCROLL EFFECT ===
+    
+    // Navbar Scroll Effect
     window.addEventListener('scroll', () => {
         const navbar = document.querySelector('.navbar');
         if (navbar) {
@@ -110,74 +121,100 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
-    // === TABS FOR WORK SECTION ===
+    
+    // Work Tabs
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const tabId = btn.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and contents
             tabBtns.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
             btn.classList.add('active');
             document.getElementById(tabId).classList.add('active');
         });
     });
-
-    // === SCROLL ANIMATION ===
+    
+    // Animate elements when scrolling
     const animateOnScroll = () => {
-        document.querySelectorAll(
-            '.about-content, .project-card, .minecraft-item, .gallery-item, .tech-badge, .contact-card'
-        ).forEach(element => {
+        const elements = document.querySelectorAll(
+            '.about-content, .project-card, .minecraft-item, ' +
+            '.gallery-item, .tech-badge, .contact-card'
+        );
+        
+        elements.forEach(element => {
             const elementPosition = element.getBoundingClientRect().top;
-            if (elementPosition < window.innerHeight / 1.2) {
+            const screenPosition = window.innerHeight / 1.2;
+            
+            if (elementPosition < screenPosition) {
                 element.style.opacity = '1';
                 element.style.transform = 'translateY(0)';
             }
         });
     };
-
-    document.querySelectorAll(
-        '.about-content, .project-card, .minecraft-item, .gallery-item, .tech-badge, .contact-card'
-    ).forEach(element => {
+    
+    // Set initial state for animated elements
+    const animatedElements = document.querySelectorAll(
+        '.about-content, .project-card, .minecraft-item, ' +
+        '.gallery-item, .tech-badge, .contact-card'
+    );
+    animatedElements.forEach(element => {
         element.style.opacity = '0';
         element.style.transform = 'translateY(20px)';
         element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     });
+    
+    // Run once on load
     animateOnScroll();
+    
+    // Run on scroll
     window.addEventListener('scroll', animateOnScroll);
-
-    // === PROJECT CARD TILT ===
-    document.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('mouseenter', () => {
+    
+    // Add hover effect to project cards with tilt effect
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
+        card.addEventListener('mouseenter', (e) => {
             card.querySelector('.project-overlay').style.opacity = '1';
             card.querySelector('img').style.transform = 'scale(1.1)';
+            
+            // Add tilt effect
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const xc = (e.clientX - rect.left - rect.width / 2) / 20;
-                const yc = (e.clientY - rect.top - rect.height / 2) / 20;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const xc = (x - rect.width / 2) / 20;
+                const yc = (y - rect.height / 2) / 20;
+                
                 card.style.transform = `perspective(1000px) rotateX(${-yc}deg) rotateY(${xc}deg) scale3d(1.05, 1.05, 1.05)`;
             });
         });
+        
         card.addEventListener('mouseleave', () => {
             card.querySelector('.project-overlay').style.opacity = '0';
             card.querySelector('img').style.transform = 'scale(1)';
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
         });
     });
 
-    // === DARK MODE TOGGLE ===
+    // Dark mode toggle
     const createDarkModeToggle = () => {
         const toggle = document.createElement('button');
         toggle.innerHTML = '🌙';
         toggle.className = 'dark-mode-toggle';
         document.body.appendChild(toggle);
+
         const isDarkMode = localStorage.getItem('darkMode') === 'true';
         if (isDarkMode) {
             document.body.classList.add('dark-mode');
             toggle.innerHTML = '☀️';
         }
+
         toggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
@@ -185,73 +222,83 @@ document.addEventListener('DOMContentLoaded', function() {
             toggle.innerHTML = isDark ? '☀️' : '🌙';
         });
     };
-    createDarkModeToggle();
 
-    // === GALLERY HOVER EFFECT ===
-    document.querySelectorAll('.gallery-item').forEach(item => {
+    createDarkModeToggle();
+    
+    // Add hover effect to gallery items
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    galleryItems.forEach(item => {
         item.addEventListener('mouseenter', () => {
             item.querySelector('.gallery-caption').style.bottom = '0';
             item.querySelector('img').style.transform = 'scale(1.1)';
         });
+        
         item.addEventListener('mouseleave', () => {
             item.querySelector('.gallery-caption').style.bottom = '-50px';
             item.querySelector('img').style.transform = 'scale(1)';
         });
     });
-
-    // === CONTACT FORM EMAILJS + SPAM PROTECTION ===
+    
+    // Contact Form Submission
     const contactForm = document.getElementById('contact-form');
     const formMessage = document.getElementById('form-message');
-
+    
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
-
-            // Honeypot spam check
-            const honeypot = document.getElementById('website');
-            if (honeypot && honeypot.value !== "") {
-                formMessage.textContent = 'Spam detected. Submission blocked.';
-                formMessage.className = 'error';
-                formMessage.style.display = 'block';
-                return;
-            }
-
-            emailjs.send("service_b3g34df", "template_cv5yi1w", {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                message: document.getElementById('message').value,
-                time: new Date().toLocaleString()
+            
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: this.method,
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
             })
-            .then(() => {
-                formMessage.textContent = '✅ Message sent successfully!';
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .then(data => {
+                formMessage.textContent = data;
                 formMessage.className = 'success';
                 formMessage.style.display = 'block';
                 contactForm.reset();
             })
-            .catch((error) => {
-                console.error(error);
-                formMessage.textContent = '❌ There was a problem sending your message. Please try again.';
+            .catch(error => {
+                formMessage.textContent = 'There was a problem submitting your form. Please try again.';
                 formMessage.className = 'error';
                 formMessage.style.display = 'block';
             });
         });
     }
-
-    // === SCROLL TO TOP BUTTON ===
+    
+    // Scroll to Top Button
     const scrollToTopBtn = document.createElement('button');
     scrollToTopBtn.innerHTML = '↑';
     scrollToTopBtn.className = 'scroll-to-top';
     document.body.appendChild(scrollToTopBtn);
+
     window.addEventListener('scroll', () => {
-        scrollToTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
-    });
-    scrollToTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.scrollY > 300) {
+            scrollToTopBtn.style.display = 'block';
+        } else {
+            scrollToTopBtn.style.display = 'none';
+        }
     });
 
-    // === FOOTER YEAR ===
-    const yearSpan = document.getElementById('current-year');
-    if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
-    }
+    scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // Update current year in footer
+    const currentYear = new Date().getFullYear();
+    document.getElementById('current-year').textContent = currentYear;
 });
